@@ -6,7 +6,7 @@ const Search = ({ onSearchChange }) => {
   const [search, setSearch] = useState(null);
 
   const loadOptions = (inputValue) => {
-    return fetch(`${METEO_API_URL}/places&namePrefix=${inputValue}`, options)
+    return fetch(`${METEO_API_URL}/places&namePrefix=${inputValue}`, { headers: { "Access-Control-Allow-Origin": "*" }})
       .then((response) => response.json())
       .then((response) => console.log(response))
       .catch((err) => console.error(err));
