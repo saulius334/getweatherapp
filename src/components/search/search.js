@@ -6,18 +6,19 @@ const Search = ({ onSearchChange }) => {
   const [search, setSearch] = useState(null);
 
   const loadOptions = (inputValue) => {
+    // let obj = '';
     return fetch(`${METEO_API_URL}/places`, meteoApiOptions)
       .then((response) => response.json())
       .then((response) => {
+        let list = response.filter(item => item.code.search(inputValue) !== -1)
         return {
-          options: response.map((city) => {
+          options: list.map(item => {
             return {
-              value: `${city.code}`,
-              label: `${city.name}, ${city.administrativeDivision}`,
-            };
-          }),
-        };
-      })
+              value: `${item.code}`,
+              label: `${item.name}, ${item.administrativeDivision}`,
+            }
+          })
+        }})
       .catch((err) => console.error(err));
   };
 
@@ -38,3 +39,5 @@ const Search = ({ onSearchChange }) => {
 };
 
 export default Search;
+
+
