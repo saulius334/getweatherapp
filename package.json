@@ -12,8 +12,7 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "react-select-async-paginate": "^0.6.2",
-    "web-vitals": "^2.1.4",
-    "proxy": "https://api.meteo.lt/v1"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

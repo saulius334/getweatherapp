@@ -6,9 +6,18 @@ const Search = ({ onSearchChange }) => {
   const [search, setSearch] = useState(null);
 
   const loadOptions = (inputValue) => {
-    return fetch(`${METEO_API_URL}/places&namePrefix=${inputValue}`, { headers: { "Access-Control-Allow-Origin": "*" }})
+    return fetch(`${METEO_API_URL}/places`, meteoApiOptions)
       .then((response) => response.json())
-      .then((response) => console.log(response))
+      .then((response) => {
+        return {
+          options: response.map((city) => {
+            return {
+              value: `${city.code}`,
+              label: `${city.name}, ${city.administrativeDivision}`,
+            };
+          }),
+        };
+      })
       .catch((err) => console.error(err));
   };
 
