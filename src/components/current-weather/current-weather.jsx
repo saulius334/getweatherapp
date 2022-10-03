@@ -17,7 +17,7 @@ const CurrentWeather = ({data}) => {
     fog : `Rūkas`,
     na : `Oro sąlygos nenustatytos`
   }
-  let oras = data.forecastTimestamps[0].conditionCode
+  let oras = data.forecastTimestamps[0].conditionCode // NEEED FIX
   console.log(oroSalygos[oras]);
   return (
     <>
