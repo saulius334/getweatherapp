@@ -1,16 +1,15 @@
 import { useState } from "react";
 import { AsyncPaginate } from "react-select-async-paginate";
 import { METEO_API_URL, meteoApiOptions } from "../../api";
-import axios from 'axios';
 
 const Search = ({ onSearchChange }) => {
   const [search, setSearch] = useState(null);
 
   const loadOptions = (inputValue) => {
-    return axios.get(`${METEO_API_URL}/places`, meteoApiOptions)
-      .then((response) => console.log(response.data))
+    return fetch(`${METEO_API_URL}/places`, meteoApiOptions)
+      .then((response) => response.json())
       .then((response) => {
-        let list = response.data.filter(item => item.code.search(inputValue) !== -1)
+        let list = response.filter(item => item.code.search(inputValue) !== -1)
         return {
           options: list.map(item => {
             return {
@@ -20,7 +19,7 @@ const Search = ({ onSearchChange }) => {
           })
         }})
         // .then((options) => console.log(options.options[0].label))
-      // .catch((err) => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   const handleOnChange = (searchData) => {

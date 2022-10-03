@@ -10,9 +10,9 @@ function App() {
   const handleOnSearchChange = (searchData) => {
     const cityCode = searchData.value
     const CurrentWeatherFetch = fetch(`${METEO_API_URL}/places/${cityCode}/forecasts/long-term`)
-    Promise.all(CurrentWeatherFetch)
+    Promise.all([CurrentWeatherFetch])
     .then(async (response) => {
-      const weatherResponse = await response.json();
+      const weatherResponse = await response[0].json();
       setCurrentWeather(weatherResponse);
     })
     .catch((err) => console.log(err))
@@ -21,7 +21,7 @@ function App() {
   return (
     <div className="container">
       <Search onSearchChange={handleOnSearchChange}/>
-      <CurrentWeather />
+      {currentWeather && <CurrentWeather data={currentWeather} />}
     </div>
   );
 }
