@@ -17,20 +17,19 @@ const CurrentWeather = ({data}) => {
     fog : `Rūkas`,
     na : `Oro sąlygos nenustatytos`
   }
-  let oras = data.forecastTimestamps[0].conditionCode // NEEED FIX
-  console.log(oroSalygos[oras]);
+  let oras = data.forecastTimestamps[0].conditionCode.replace("-", "_")
   return (
     <>
       <div className="weather">
         <div className="top">
           <div>
             <p className="city">{data.place.name}, {data.place.administrativeDivision}</p>
-            <p className="weather-desc">{oroSalygos.oras}</p>
+            <p className="weather-desc">{oroSalygos[oras]}</p>
           </div>
           <img src={`icons/${data.forecastTimestamps[0].conditionCode}.png`} className="weather-icon" alt="weather" />
         </div>
         <div className="bottom">
-          <p className="temperature">{data.forecastTimestamps[0].airTemperature}C</p>
+          <p className="temperature">{Math.round(data.forecastTimestamps[0].airTemperature)}C</p>
           <div className="details">
             <div className="parameter-row">
               <span className="parameter-label top">Details</span>
