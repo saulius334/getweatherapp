@@ -4,7 +4,6 @@ import './App.css';
 import CurrentWeather from './components/current-weather/current-weather';
 import Forecast from './components/forecast/forecast';
 import Search from './components/search/search';
-import WeatherContext from './WeatherContext';
 
 
 function App() {
@@ -20,17 +19,15 @@ function App() {
     })
     .catch((err) => console.log(err))
   }
+  console.log(currentWeather);
   return (
-    <WeatherContext.Provider value={{
-      currentWeather,
-
-    }}>
+    
     <div className="container">
       <Search onSearchChange={handleOnSearchChange}/>
       {currentWeather && <CurrentWeather data={currentWeather} />}
       {currentWeather && <Forecast data={currentWeather} />}
     </div>
-    </WeatherContext.Provider>
+
   );
 }
 
