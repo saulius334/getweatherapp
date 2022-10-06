@@ -20,6 +20,7 @@ const CurrentWeather = ({data}) => {
     na : `Oro sąlygos nenustatytos`
   }
   let oras = data.forecastTimestamps[0].conditionCode.replace("-", "_")
+  console.log('data',data);
   return (
     <>
       <div className="weather">

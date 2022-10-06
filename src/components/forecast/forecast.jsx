@@ -43,74 +43,83 @@ const Forecast = ({ data }) => {
   const day = WEEK_DAYS.slice(dayOfTheWeek, WEEK_DAYS.length).concat(
     WEEK_DAYS.slice(0, dayOfTheWeek)
   );
-  const fixedData = data.forecastTimestamps.filter(
-    (item) =>
-    //console.log(item)
- item.forecastTimeUtc.split(" ")[1] === "03:00:00" ||
-item.forecastTimeUtc.split(" ")[1] === "06:00:00" ||
-item.forecastTimeUtc.split(" ")[1] === "09:00:00" ||
-item.forecastTimeUtc.split(" ")[1] === "12:00:00" ||
-item.forecastTimeUtc.split(" ")[1] === "15:00:00" ||
-item.forecastTimeUtc.split(" ")[1] === "18:00:00" ||
-item.forecastTimeUtc.split(" ")[1] === "21:00:00" ||
-item.forecastTimeUtc.split(" ")[1] === "00:00:00"
-      );
-      console.log(fixedData);
-    function weekInfo() {
-      let list = []
-      let date = new Date()
-      for(let i = 0; i < 7; i++) {
-        date.setDate(date.getDate() + i)
-        console.log('date-',date)
-        let todayTimes = fixedData.filter((item) => item.forecastTimeUtc.split(" ")[0] === date.toISOString().split('T')[0]);
-        list[i] = 
-          todayTimes
-      }
-      return list;
+  function addDays(days) {
+    var result = new Date();
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+  const dayTodayTimestamp = new Date();
+  const lastDateTimestamp = addDays(6);
+  //lastDateTimestamp.setUTCHours(0, 59, 59, 999);
+  const dayToday = dayTodayTimestamp.toLocaleDateString('lt-LT'); 
+  const dayLast = lastDateTimestamp.toLocaleDateString('lt-LT');
+  const filteredData = data.forecastTimestamps.filter(function (a) {
+    let hitDates = new Date(a.forecastTimeUtc).toLocaleDateString('lt-LT');
+    return hitDates >= dayToday && hitDates <= dayLast;
+  });
+  let clearData = [];
+  [...filteredData]?.map((el) =>
+    clearData.length === 0
+      ? clearData.push([el])
+      : new Date(clearData[clearData.length - 1][0].forecastTimeUtc).toLocaleDateString('lt-LT') === new Date(el.forecastTimeUtc).toLocaleDateString('lt-LT') ? 
+      clearData[clearData.length - 1].push(el) : clearData.push([el])
+  );
+  // filteredData.pop(); //spėju dėl timezone formatavimo pakliūna vidurnakčio domuo. Reikia kažką protingesnio sugalvoti
+  console.log(filteredData);
+  console.log(clearData); //gaunam masyvą masyvų, bėda tik ta, kad konvertuoja į GMT0 laiką ir todėl dar to trys valandos patenka.
+//   const fixedData = data.forecastTimestamps.filter(
+//     (item) =>
+//     //console.log(item)
+//  item.forecastTimeUtc.split(" ")[1] === "03:00:00" ||
+// item.forecastTimeUtc.split(" ")[1] === "06:00:00" ||
+// item.forecastTimeUtc.split(" ")[1] === "09:00:00" ||
+// item.forecastTimeUtc.split(" ")[1] === "12:00:00" ||
+// item.forecastTimeUtc.split(" ")[1] === "15:00:00" ||
+// item.forecastTimeUtc.split(" ")[1] === "18:00:00" ||
+// item.forecastTimeUtc.split(" ")[1] === "21:00:00" ||
+// item.forecastTimeUtc.split(" ")[1] === "00:00:00"
+//       );
+      // console.log(fixedData);
 
-
-
-    }
-    console.log(weekInfo());
     // console.log(fixedData[0].forecastTimeUtc.split(" ")[0]);
     // let date = new Date();
     // date.setDate(date.getDate() + 1)
     // console.log(date.toISOString().split('T')[0]);
 
-  function getMinMaxTemp(currentDay) {
-    if (currentDay === new Date().toISOString().split('T')[0]) {
-    let min = fixedData[0].airTemperature;
-    let max = fixedData[0].airTemperature;
-    for (let i = 1; i < fixedData.length; i++) {
-      if (fixedData[i].airTemperature < min) {
-        min = fixedData[i].airTemperature
-      }
-      if (fixedData[i].airTemperature > max) {
-        max = fixedData[i].airTemperature
-      }
-    }
-    return `Min temp: ${min}, Max temp:${max}`;
-  }
-}
+//   function getMinMaxTemp(currentDay) {
+//     if (currentDay === new Date().toISOString().split('T')[0]) {
+//     let min = fixedData[0].airTemperature;
+//     let max = fixedData[0].airTemperature;
+//     for (let i = 1; i < fixedData.length; i++) {
+//       if (fixedData[i].airTemperature < min) {
+//         min = fixedData[i].airTemperature
+//       }
+//       if (fixedData[i].airTemperature > max) {
+//         max = fixedData[i].airTemperature
+//       }
+//     }
+//     return `Min temp: ${min}, Max temp:${max}`;
+//   }
+// }
 
   return (
     <>
       <label className="title">Daily</label>
       <Accordion allowZeroExpanded>
-        {fixedData.splice(0,7).map((item, index, array) => (
+        {clearData.map((item, index, array) => (
           <AccordionItem key={index}>
             <AccordionItemHeading>
               <AccordionItemButton>
                 <div className="daily-item">
                   <img
-                    src={`icons/${item.conditionCode}.png`}
+                    src={`icons/${item[Math.floor(array[index].length / 2)].conditionCode}.png`}
                     className="icon-small"
                     alt="weather"
                   />
                   {index}
                   <label className="day">{day[index]}</label>
                   <label className="description">{oroSalygos[oras]}</label>
-                  <label className="min-max">{getMinMaxTemp(array[index].forecastTimeUtc.split(' ')[0])}</label>
+                  {/* <label className="min-max">{getMinMaxTemp(array[index].forecastTimeUtc.split('T')[0])}</label> */}
                 </div>
               </AccordionItemButton>
             </AccordionItemHeading>
